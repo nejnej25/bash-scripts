@@ -47,12 +47,13 @@ iptables-config () {
 	if [ $DIST == "CentOS" ]; then
 		service iptables save
 	elif [ $DIST =="Ubuntu" ]; then
-iptables-save > /etc/iptables.rules
-cat > /etc/network/if-pre-up.d/iptables <<EOF
-#!/bin/bash
-iptables-restore < /etc/iptables.rules
-exit 0
-EOF
+	iptables-save > /etc/iptables.rules
+	cat > /etc/network/if-pre-up.d/iptables <<-EOF
+	#!/bin/bash
+	iptables-restore < /etc/iptables.rules
+	exit 0
+	EOF
+
 	chmod 755 /etc/network/if-pre-up.d/iptables
 	fi
 }
