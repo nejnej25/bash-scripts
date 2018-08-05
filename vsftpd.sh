@@ -1,6 +1,11 @@
 #!/bin/bash
 #Author: Perry
 
+if [ $(id -u) -ne 0 ]; then
+	echo "Please run this script with root privileges.."
+	exit 2
+fi
+
 conf=/etc/vsftpd/vsftpd.conf
 
 rpm -q vsftpd > /dev/null || yum install -y vsftpd > /tmp/yum-vsftpd.log 2>&1
