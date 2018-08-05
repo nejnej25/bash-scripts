@@ -1,2 +1,2 @@
 # bash-scripts
-hello
+Useful bash scripts created by Perry
