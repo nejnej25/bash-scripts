@@ -24,8 +24,8 @@ echo 'Installing clamav packages..'
 yum install -y clamav clamav-update clamav-scanner-sysvinit > /dev/null 2>&1
 
 #Configuring clamav
-[ -f /etc/freshclam.conf ] && FRESH_CONF=/etc/freshclam.conf || echo 'Cannot find freshclam.conf file..'
-[ -f /etc/clamd.d/scan.conf ] && SCAN_CONF=/etc/clamd.d/scan.conf || echo 'Cannot find scan.conf file..'
+[ -f /etc/freshclam.conf ] && FRESH_CONF=/etc/freshclam.conf || echo 'Cannot find freshclam.conf file exiting..' && exit
+[ -f /etc/clamd.d/scan.conf ] && SCAN_CONF=/etc/clamd.d/scan.conf || echo 'Cannot find scan.conf file exiting..' && exit
 sed -i 's/Example/#Example/' $FRESH_CONF
 sed -i 's:#DatabaseDirectory /var/lib/clamav:DatabaseDirectory /var/lib/clamav:' $FRESH_CONF
 sed -i 's:#UpdateLogFile /var/log/freshclam.log:UpdateLogFile /var/log/freshclam.log:' $FRESH_CONF
