@@ -9,14 +9,7 @@ fi
 [ -f /etc/os-release ] && grep centos /etc/os-release > /dev/null && DIST='centos' || DIST='ubuntu'
 
 if [ $DIST = "centos" ]; then
-	echo 'Adding NGINX repository..'
-        cat > /etc/yum.repos.d/nginx.repo<<-EOF
-        [nginx]
-        name=nginx repo
-        baseurl=http://nginx.org/packages/$DIST/$releasever/\$basearch/
-        gpgcheck=0
-        enabled=1
-        EOF
+	yum install -y epel-release > /tmp/yum.epel.log 2>&1
 	rpm -q nginx > /dev/null && echo 'NGINX already installed' || yum install nginx -y > /tmp/yum.nginx.log 2>&1
 else
 	apt list --installed | grep nginx > /dev/null || apt-get update > /dev/null && apt-get install -y nginx > /tmp/apt.nginx.log 2>&1
