@@ -6,19 +6,32 @@ if [ $(id -u) -ne 0 ]; then
         exit 2
 fi
 
-[ -f /etc/os-release ] && grep 'ID="centos"' /etc/os-release > /dev/null && DIST='centos' || DIST='rhel'
-[ -f /etc/os-release ] && releasever=$(cat /etc/os-release | grep VERSION_ID| cut -f 2 -d=) || releasever='6'
+[ -f /etc/os-release ] && grep centos /etc/os-release > /dev/null && DIST='centos' || DIST='ubuntu'
 
-echo 'Adding NGINX repository..'
-cat > /etc/yum.repos.d/nginx.repo<<EOF
-[nginx]
-name=nginx repo
-baseurl=http://nginx.org/packages/$DIST/$releasever/\$basearch/
-gpgcheck=0
-enabled=1
-EOF
+if [ $DIST = "centos" ]; then
+	echo 'Adding NGINX repository..'
+        cat > /etc/yum.repos.d/nginx.repo<<-EOF
+        [nginx]
+        name=nginx repo
+        baseurl=http://nginx.org/packages/$DIST/$releasever/\$basearch/
+        gpgcheck=0
+        enabled=1
+        EOF
+	rpm -q nginx > /dev/null && echo 'NGINX already installed' || yum install nginx -y > /tmp/yum.nginx.log 2>&1
+else
+	apt list --installed | grep nginx > /dev/null || apt-get update > /dev/null && apt-get install -y nginx > /tmp/apt.nginx.log 2>&1
+fi
 
-rpm -q nginx > /dev/null  && echo 'NGINX already installed' || yum install nginx -y > /tmp/yum.nginx.log 2>&1
-systemctl enable nginx > /dev/null && systemctl start nginx
+#Check if systemd
+type systemctl > /dev/null
+
+if [ $? -eq 0 ]; then
+	systemctl enable nginx && systemctl start nginx
+else
+	service nginx restart
+	chkconfig nginx on > /dev/null 2>&1
+fi
+
+
+#Open port 80
 iptables -I INPUT -p tcp --dport 80 -j ACCEPT
-rpm -q iptables-services > /dev/null && service iptables save || echo 'IPTables service not installed, save it yourself!'
