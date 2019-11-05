@@ -28,7 +28,7 @@ type systemctl > /dev/null
 if [ $? -eq 0 ]; then
 	systemctl enable nginx && systemctl start nginx
 else
-	service nginx restart
+	service nginx restart > /dev/null
 	chkconfig nginx on > /dev/null 2>&1
 fi
 
