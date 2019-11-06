@@ -12,7 +12,7 @@ if [ $DIST = "centos" ]; then
 	yum install -y epel-release > /tmp/yum.epel.log 2>&1
 	rpm -q nginx > /dev/null && echo 'NGINX already installed' || yum install nginx -y > /tmp/yum.nginx.log 2>&1
 else
-	apt list --installed | grep nginx > /dev/null || apt-get update > /dev/null && apt-get install -y nginx > /tmp/apt.nginx.log 2>&1
+	apt list --installed | grep nginx > /dev/null && echo 'NGINX already isntalled' || apt-get update > /dev/null && apt-get install -y nginx > /tmp/apt.nginx.log 2>&1
 fi
 
 #Check if systemd
